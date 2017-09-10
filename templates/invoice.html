@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {{.refresh}}
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>gopaycoin Invoice</title>
+    <link href="../assets/invoice/css.css" rel="stylesheet" type="text/css">
+    <link href="../assets/invoice/style.css" rel="stylesheet" type="text/css">
+  </head>
+
+  <body style="background: transparent">
+    <noscript>
+      <center style="padding: 2em">
+        <h2>Javascript is currently disabled in your browser.</h2>
+        <h5>Please enable Javascript and refresh this page for the best experience.</h5>
+
+        <p>Alternatively, click below to continue to our HTML-only invoice.</p>
+
+        <form action="/invoice-noscript" method="GET">
+          <button style="text-decoration: underline; color: blue">Continue to javascript-disabled invoice &gt;</button>
+        </form>
+      </center>
+    </noscript>
+
+    <!--[if lte IE 8]>
+    <center style="padding: 2em">
+      <form action="/invoice-noscript" method="GET">
+        <button style="text-decoration: underline; color: blue">Continue to legacy browser compatible invoice page
+        </button>
+      </form>
+    </center>
+    <![endif]-->
+
+    <invoice ng-version="4.2.3"><div class="no-bounce">
+<div class="modal-backdrop fade-in"></div>
+
+<!----><div class="modal page">
+
+  <div class="modal-dialog open opened {{.invoice_status}}" role="document">
+
+    <div class="modal-content long">
+
+      <div class="content">
+
+        <div class="invoice">
+          <div class="top-header">
+            <div class="header">
+              <div class="header__icon">
+                <img class="header__icon__img" src="../assets/invoice/logo-white.svg">
+              </div>
+              <!---->
+            </div>
+
+            <div class="timer-row {{.expiring}}">
+              <div class="timer-row__progress-bar" style="width: 0%;"></div>
+              <!----><div class="timer-row__spinner">
+                <bp-spinner>
+  <svg xml:space="preserve" style="enable-background:new 0 0 50 50;" version="1.1" viewBox="0 0 50 50" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px">
+    <path d="M11.1,29.6c-0.5-1.5-0.8-3-0.8-4.6c0-8.1,6.6-14.7,14.7-14.7S39.7,16.9,39.7,25c0,1.6-0.3,3.2-0.8,4.6l6.1,2c0.7-2.1,1.1-4.3,1.1-6.6c0-11.7-9.5-21.2-21.2-21.2S3.8,13.3,3.8,25c0,2.3,0.4,4.5,1.1,6.6L11.1,29.6z"></path>
+  </svg>
+  </bp-spinner>
+              </div>
+              <div class="timer-row__message">
+                <!----><span>
+                  <!----><span i18n="">{{.status}}</span>
+                  <!---->
+                </span>
+                <!---->
+              </div>
+              <div class="timer-row__time-left">{{.time}}</div>
+            </div>
+          </div>
+
+          <div class="order-details">
+
+            <!----><div class="single-item-order">
+              <div class="single-item-order__left">
+                <div class="single-item-order__left__name">
+                  {{.merchant}}
+                </div>
+                <div class="single-item-order__left__description">
+                  {{.item}}
+                </div>
+              </div>
+              <!----><div class="single-item-order__right">
+                <div class="single-item-order__right__btc-price clickable" id="buyerTotalBtcAmount">
+                  {{.pay_total_amount}} BTC
+                  <!----><img class="single-item-order__right__btc-price__chevron expanded" src="../assets/invoice/chevron.svg">
+                </div>
+                <!----><div class="single-item-order__right__ex-rate">
+                    1 BTC = {{.btc_rate}} USD
+                </div>
+              </div>
+            </div>
+
+            <!---->
+
+            <line-items class="expanded"><div class="line-items">
+  <!---->
+  <div class="line-items__item">
+    <div class="line-items__item__label" i18n="">Payment Amount</div>
+    <div class="line-items__item__value">{{.pay_amount}} BTC</div>
+  </div>
+  <div class="line-items__item">
+    <div class="line-items__item__label">
+      <span i18n="">Network Cost</span>
+      <a href="https://help/paying-with-bitcoin/why-am-i-being-charged-an-additional-network-cost-on-my-invoice" target="_blank">
+        <img src="../assets/invoice/invoice-fee-question.svg">
+      </a>
+    </div>
+    <div class="line-items__item__value" i18n="">1 transaction<!----> x {{.fee_amount}} BTC</div>
+  </div>
+  <div class="line-items__item line-items__item--total">
+    <div class="line-items__item__label" i18n="">Total</div>
+    <div class="line-items__item__value">{{.pay_total_amount}} BTC</div>
+  </div>
+
+  <!---->
+</div>
+</line-items>
+
+            
+
+          </div>
+
+          <div adjust-height="" class="payment-box" style="min-height: 478px !important;">
+
+            <div class="bp-view payment manual-flow enter-contact-email" id="emailAddressView">
+              <form class="manual__step-one refund-address-form contact-email-form ng-touched ng-dirty ng-valid ng-submitted" id="emailAddressForm" name="emailAddressForm" novalidate="">
+                <div class="manual__step-one__header">
+                  <!----><span i18n="">Contact &amp; Refund Email</span>
+                  <!---->
+                </div>
+
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label">
+                    <!----><span i18n="">Please provide an email address below. We�ll contact you at this address if there is an issue with your payment. </span>
+                    <!---->
+                  </span>
+                  <span class="submission-error-label" i18n="">Please enter a valid email address.</span>
+                </div>
+
+                <div class="input-wrapper">
+                  <input bp-focus="" class="bp-input email-input ng-touched ng-dirty ng-valid" i18n-placeholder="" id="emailAddressFormInput" name="receiptEmail" placeholder="Your email" required="" pattern="/^(?:[\w\!\#\$\%\&amp;\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&amp;\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/" value="customer@customer.com" type="email">
+                  <bp-loading-button i18n="">
+    <button class="action-button" style="margin-top: 15px;" type="submit">
+      <span class="button-text" lcl="">Continue</span>
+      <div class="loader-wrapper">
+        <bp-spinner>
+  <svg xml:space="preserve" style="enable-background:new 0 0 50 50;" version="1.1" viewBox="0 0 50 50" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px">
+    <path d="M11.1,29.6c-0.5-1.5-0.8-3-0.8-4.6c0-8.1,6.6-14.7,14.7-14.7S39.7,16.9,39.7,25c0,1.6-0.3,3.2-0.8,4.6l6.1,2c0.7-2.1,1.1-4.3,1.1-6.6c0-11.7-9.5-21.2-21.2-21.2S3.8,13.3,3.8,25c0,2.3,0.4,4.5,1.1,6.6L11.1,29.6z"></path>
+  </svg>
+  </bp-spinner>
+      </div>
+    </button>
+  </bp-loading-button>
+                </div>
+              </form>
+            </div>
+
+            <div class="bp-view" id="link-expired" style="padding-top: 3.6rem;">
+              <div class="manual__step-one refund-address-form" novalidate="">
+                <div class="manual__step-one__header" i18n="">Link Expired</div>
+
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label" i18n="">Sorry, this link has expired. Please try requesting another refund by clicking the button below.</span>
+                </div>
+
+                <div class="input-wrapper">
+                  <bp-loading-button i18n="">
+    <button class="action-button" style="margin-top: 15px;" type="submit">
+      <span class="button-text" lcl="">Request Refund</span>
+      <div class="loader-wrapper">
+        <bp-spinner>
+  <svg xml:space="preserve" style="enable-background:new 0 0 50 50;" version="1.1" viewBox="0 0 50 50" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px">
+    <path d="M11.1,29.6c-0.5-1.5-0.8-3-0.8-4.6c0-8.1,6.6-14.7,14.7-14.7S39.7,16.9,39.7,25c0,1.6-0.3,3.2-0.8,4.6l6.1,2c0.7-2.1,1.1-4.3,1.1-6.6c0-11.7-9.5-21.2-21.2-21.2S3.8,13.3,3.8,25c0,2.3,0.4,4.5,1.1,6.6L11.1,29.6z"></path>
+  </svg>
+  </bp-spinner>
+      </div>
+    </button>
+  </bp-loading-button>
+                </div>
+              </div>
+            </div>
+
+            <div class="bp-view confirm-contact-email-view">
+              <form class="manual__step-one refund-address-form contact-email-form ng-untouched ng-pristine" novalidate="">
+                <div class="manual__step-one__header" i18n="">Contact &amp; Refund Email</div>
+
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label" i18n="">If there is an issue with this payment, or a refund needs to be made, we will contact you at this address.</span>
+                </div>
+
+                <div class="input-wrapper">
+                  <input bp-focus="focusEmailInput" class="bp-input email-input ng-untouched ng-pristine" disabled="disabled" name="receiptEmail" placeholder="Your email" style="opacity: 1;" value="customer@customer.com" type="email">
+                  <button class="action-button" style="margin-top: 15px;">
+                    <span i18n="">Confirm email address</span>
+                  </button>
+                </div>
+                <div class="refund-address-form__link" id="wrong-email-button" style="color: #a9a9a9;">
+                  <span i18n="">Wrong email?</span>
+                </div>
+              </form>
+            </div>
+
+            <div class="bp-view wrong-email-view" id="compromised-invoice">
+              <div class="manual__step-one refund-address-form" novalidate="" style="margin-top: -1rem;">
+                <div class="manual__step-one__header">
+                  <span i18n="">There seems to be a problem</span>
+                </div>
+
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label" i18n="">This invoice was previously opened, and the address <strong>customer@customer.com</strong> was submitted as your contact email. If you entered this email, you can still safely make your payment. <br> <br>
+ If you did not submit the email address, it's possible a thief falsely 
+submitted this address to steal refunds. Please contact the merchant 
+about this security incident, and try your payment again.</span>
+                </div>
+
+                <div class="input-wrapper">
+                  <a class="action-button" style="margin-top: 15px;" target="_blank" href="mailto:support@merchant.com">
+                    <span i18n="">Contact {{.merchant}}</span>
+                  </a>
+                </div>
+                <div class="refund-address-form__link">
+                  <span i18n="">I understand, continue to payment&nbsp;></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bp-view confirm-bitcoin-address-view" id="confirm-refund-address">
+              <form class="manual__step-one refund-address-form ng-untouched ng-pristine ng-valid" novalidate="" style="padding-top: 1.6rem;">
+                <div><img src="../assets/invoice/mail.svg"></div>
+                <div class="manual__step-one__header">
+                  <span i18n="">Please confirm your address</span>
+                </div>
+
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label" i18n="">You should receive an email in a moment at <strong>customer@customer.com</strong>. To ensure your refund is sent to the correct address, please confirm your bitcoin address by clicking the link in the email. </span>
+                </div>
+
+                <bp-resend-link id="resend-link"><div class="bp-resend__link">
+  <span class="link-text">
+    <!----><span i18n="">Resend email</span>
+    <!---->
+  </span>
+  <div class="success-text">
+    <!----><img src="../assets/invoice/circle-check.svg">
+    <!----><div i18n="">Email resent</div>
+    <!---->
+  </div>
+</div>
+</bp-resend-link>
+              </form>
+            </div>
+
+            <div class="bp-view refund-address-view" id="enter-refund-address">
+
+              <form class="manual__step-one refund-address-form ng-untouched ng-pristine ng-invalid" name="refundAddressForm" novalidate="" style="margin-top: 28px; margin-bottom: 4rem;">
+                <div class="manual__step-one__header">
+                  <!----><span i18n="">Please provide a refund address.</span>
+                  <!---->
+                </div>
+                <div class="manual__step-one__instructions">
+                  <span class="initial-label">
+                    <!----><span i18n="">To send your refund of NaN BTC,
+ we�ll need a bitcoin address from your wallet. Please open your bitcoin
+ wallet, copy a receiving address, and paste it below. </span>
+                    <!---->
+                  </span>
+                  <span class="submission-error-label" i18n="" id="invalid-bitcoin-address">Please enter a valid bitcoin address.</span>
+                </div>
+
+                <div class="input-wrapper">
+                  <bp-refund-address name="refundAddress" ngmodel="" class="ng-untouched ng-pristine ng-invalid"><div class="bp-refund-address">
+  <div class="bitcoin-logo">
+    <div><img src="../assets/invoice/bitcoin-symbol.svg"></div>
+  </div>
+  <input class="bp-input {'not-empty': addressValue.length > 0} ng-untouched ng-pristine ng-valid" id="refund-address-input" name="refundAddress" ngclass="{'not-empty': addressValue.length > 0}">
+</div>
+</bp-refund-address>
+                  <bp-loading-button i18n="" id="request-refund-button">
+    <button class="action-button" style="margin-top: 15px;" type="submit">
+      <span class="button-text" lcl="">Request Refund</span>
+      <div class="loader-wrapper">
+        <bp-spinner>
+  <svg xml:space="preserve" style="enable-background:new 0 0 50 50;" version="1.1" viewBox="0 0 50 50" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px">
+    <path d="M11.1,29.6c-0.5-1.5-0.8-3-0.8-4.6c0-8.1,6.6-14.7,14.7-14.7S39.7,16.9,39.7,25c0,1.6-0.3,3.2-0.8,4.6l6.1,2c0.7-2.1,1.1-4.3,1.1-6.6c0-11.7-9.5-21.2-21.2-21.2S3.8,13.3,3.8,25c0,2.3,0.4,4.5,1.1,6.6L11.1,29.6z"></path>
+  </svg>
+  </bp-spinner>
+      </div>
+    </button>
+  </bp-loading-button>
+                </div>
+                <div class="refund-address-form__cancel">
+                  <span i18n="">Cancel</span>
+                </div>
+              </form>
+            </div>
+
+                            <div id="copy" class="bp-view payment manual-flow scan {{.payment}}">
+
+                <div class="manual__step-two__instructions">
+                  <span i18n="">To complete your payment, please send {{.pay_total_amount}} BTC to the address below.</span>
+                </div>
+
+                <div class="manual-box flipped" style="margin-bottom: 30px;">
+                  <div class="manual-box__amount">
+                    <div class="manual-box__amount__label label" i18n="">Amount</div>
+                    <!----><div class="manual-box__amount__value copy-cursor" ngxclipboard="">
+                      <span>{{.pay_total_amount}} BTC</span>
+                      <div class="copied-label">
+                        <span i18n="">Copied</span>
+                      </div>
+                    </div>
+                    <!---->
+                  </div>
+                  <div class="manual-box__address">
+                    <div class="flipper flipped-initially">
+                      <div class="back"></div>
+                      <div class="front">
+                        <div class="manual-box__address__arrow"></div>
+                        <div class="manual-box__address__label label" i18n="">Address</div>
+                        <!----><div class="manual-box__address__value copy-cursor" ngxclipboard="">
+                          <div class="manual-box__address__wrapper">
+                            <div class="manual-box__address__wrapper__logo">
+                              <img src="../assets/invoice/bitcoin-symbol.svg">
+                            </div>
+                            <div class="manual-box__address__wrapper__value">
+                              {{.pay_address}}
+                            </div>
+                          </div>
+                          <div class="copied-label" style="top: 5px;">
+                            <span i18n="">Copied</span>
+                          </div>
+                        </div>
+                        <!---->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              <div class="payment__details__instruction__open-wallet active">
+
+                <a href="bitcoin:{{.pay_address}}?amount={{.pay_total_amount}}&amp;r=http://url" class="payment__details__instruction__open-wallet__btn action-button active">
+                  <span i18n="">Open in wallet</span>
+                  <img class="payment__details__instruction__open-wallet__btn__external-link" src="../assets/invoice/external-link.svg">
+                </a>
+
+              </div></div>
+                          <div class="bp-view payment manual-flow" id="copy-warning">
+                            <div class="manual__step-two--warning">
+                              <div class="copy-warning-icon" style="opacity: 1;">
+                                <img src="../assets/invoice/alert.svg">
+                              </div>
+                              <p class="warning-header" i18n=""> Advanced use only </p>
+                              <div class="warning-content" i18n="">Your
+                                payment
+                                must include the <strong> exact amount of bitcoin </strong> requested and a
+                                correct <a href="https://help.minerfee" target="_blank">bitcoin miner fee.</a>
+                              </div>
+                              <div class="warning-content" i18n="">
+                                Payments with insufficient funds or mining fees may be <strong>very delayed
+                                </strong>or need to be refunded.
+                              </div>
+                              <button class="action-button action-button--secondary accept-copy-warning" id="accept-copy-warning" style="opacity: 1;">
+                                <span i18n="">I understand the risk</span>
+                              </button>
+                            </div>
+            </div>
+
+            <div class="bp-view pad {{.paid}}" id="paid">
+
+              <div class="status-block">
+                <div class="success-block">
+                  <div class="status-icon">
+                    <div class="status-icon__wrapper">
+                      <div class="inner-wrapper">
+                        <div class="status-icon__wrapper__icon">
+                          <img src="../assets/invoice/checkmark.svg">
+                        </div>
+                        <div class="status-icon__wrapper__outline"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!----><div class="success-message" i18n="">This invoice has been paid.</div>
+                  <!---->
+                </div>
+              </div>
+
+              <!---->
+
+              <div class="button-wrapper refund-address-form-container" id="refund-overpayment-button">
+                <!---->
+              </div>
+
+              <!---->
+            </div>
+
+            <div class="bp-view" id="refund-pending">
+              <div class="status-block">
+                <div class="pending-block" style="position: relative; padding-bottom: 1.6rem;">
+                  <img src="../assets/invoice/refund-pending.svg">
+                  <div class="pending-block__header" i18n="">Processing Refund</div>
+                  <span>
+                    <!---->
+                    <!---->
+                    <!----><span class="pending-block__message" i18n="">The amount below will be refunded to you within 1-2 business days. </span>
+                  </span>
+                </div>
+              </div>
+
+              <div class="manual-box" style="margin-bottom: 30px;">
+                <div class="manual-box__amount amount-only">
+                  <div class="manual-box__amount__label label">
+                    <span class="initial-label">&nbsp;</span>
+                    <span class="final-label" i18n="">Amount To Be Refunded</span>
+                  </div>
+                  <div class="manual-box__amount__value">NaN BTC</div>
+                </div>
+                <div class="manual-box__address">
+                  <div class="flipper">
+                    <div class="back"></div>
+                    <div class="front">
+                      <div class="manual-box__address__arrow"></div>
+                      <div class="manual-box__address__label label" i18n="">Will Be Refunded To</div>
+                      <div class="manual-box__address__wrapper">
+                        <div class="manual-box__address__wrapper__logo">
+                          <img src="../assets/invoice/bitcoin-symbol.svg">
+                        </div>
+                        <div class="manual-box__address__wrapper__value">
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!---->
+            </div>
+
+            <div class="bp-view expired" id="low-fee">
+              <div class="expired__body">
+
+                <div class="expired__header" i18n="" style="font-weight: 400; font-size: 22px;">Payment Confirming</div>
+
+                <div class="expired__text" i18n="">This payment was made with a low <a href="https://bitcoin.org/en/glossary/transaction-fee">bitcoin miner fee</a>, which may prevent it from being accepted by the Bitcoin network.</div>
+
+                <div class="expired__text" i18n="">This is an issue with the configuration of your bitcoin wallet.</div>
+
+                <div class="expired__text" i18n="">If the transaction 
+doesn't confirm, the funds will be spendable again in your wallet. 
+Depending on the wallet, this may take 48-72 hours.</div>
+
+                <low-fee-timeline>
+  <div class="timeline">
+    <div class="timeline__item">
+      <div class="timeline__item__icon timeline__item__icon--complete">
+        <img src="../assets/invoice/checkmark-small.svg">
+      </div>
+      <div class="timeline__item__name" i18n="">Transaction created</div>
+    </div>
+    <div class="timeline__item">
+      <div class="timeline__item__icon timeline__item__icon--pending">
+        <img src="../assets/invoice/pending.svg">
+      </div>
+      <div class="timeline__item__name">
+        <span i18n="">Transaction confirming � funds have not yet moved</span>
+      </div>
+    </div>
+    <div class="timeline__item">
+      <div class="timeline__item__icon"></div>
+      <div class="timeline__item__name" i18n="">Payment received by {{.merchant}}</div>
+    </div>
+  </div>
+  </low-fee-timeline>
+
+              </div>
+
+              <!---->
+
+              <!----><button class="action-button" style="margin-top: .75rem;">
+                <bp-done-text><!---->
+<!----><span i18n="">Return to {{.merchant}}</span>
+</bp-done-text>
+              </button>
+            </div>
+
+            <div class="bp-view expired {{.expired}}" id="expired">
+              <!----><div>
+
+                <div class="expired__body">
+
+                  <div class="expired__header" i18n="">What happened?</div>
+
+                    <div class="expired__text" i18n="">This invoice has expired. An invoice is only valid for {{.valid_time}} minutes. You can <div class="expired__text__link"><a href="{{.return_url}}"> return to {{.merchant}}</a></div> if you would like to submit your payment again.</div>
+
+                  <div class="expired__text" i18n="">If you tried to send a payment, it has not yet been accepted by the Bitcoin network. We have not yet received your funds.</div>
+
+                  <div class="expired__text" i18n="">If the transaction 
+is not accepted by the Bitcoin network, the funds will be spendable 
+again in your wallet. Depending on your wallet, this may take 48-72 
+hours.</div>
+
+                  <div class="expired__text">
+                    <span class="expired__text__bullet" i18n="">Invoice ID:</span> {{.invoice_id}}<br>
+                    <!----><span>
+                      <span class="expired__text__bullet" i18n="">Order ID:</span> XXXXXX
+                    </span>
+                  </div>
+
+                </div>
+
+                <a class="action-button" style="margin-top: 20px;" href="{{.return_url}}">
+                    <bp-done-text>
+                        <span i18n="">Return to {{.merchant}}</span>
+                    </bp-done-text>
+                </a>
+
+              </div>
+              <!---->
+
+              <!---->
+
+            </div>
+
+            <div class="bp-view expired {{.archived}}" id="archived">
+
+              <div class="expired-icon">
+                <img src="../assets/invoice/archived.svg">
+              </div>
+
+              <div class="archived__message">
+                <div class="archived__message__header">
+                  <span i18n="">This invoice has been archived.</span>
+                </div>
+                <div>
+                  <span i18n="">Please contact the merchant for order information or assistance.</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!----><div class="bp-view {{.refunded}}" id="refund-complete">
+              <div class="status-block">
+                <div class="success-block" style="opacity: 1;">
+                  <div class="status-icon">
+                    <div class="status-icon__wrapper">
+                      <div class="inner-wrapper">
+                        <div class="status-icon__wrapper__icon">
+                          <img src="../assets/invoice/checkmark.svg">
+                        </div>
+                        <div class="status-icon__wrapper__outline" style="height: 117px; width: 117px;"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="success-message">
+                    <!----><span>
+                      <span i18n="">{{.refund_status}}</span>
+                    </span>
+                    <!---->
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="manual-box">
+                <div class="manual-box__amount amount-only">
+                  <div class="manual-box__amount__label label">
+                    <span class="initial-label" i18n="">{{.refund_label}}</span>
+                    <!---->
+                  </div>
+                  <div class="manual-box__amount__value">{{.refunded_amount}} BTC</div>
+                </div>
+                <div class="manual-box__address">
+                  <div class="flipper flipped-initially">
+                    <div class="back"></div>
+                    <div class="front">
+                      <div class="manual-box__address__arrow"></div>
+                      <div class="manual-box__address__label label" i18n="">Refunded To</div>
+                      <div class="manual-box__address__wrapper">
+                        <div class="manual-box__address__wrapper__logo">
+                          <img src="../assets/invoice/bitcoin-symbol.svg">
+                        </div>
+                        <div class="manual-box__address__wrapper__value">
+                          {{.refund_address}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!---->
+
+            <!---->
+
+            <div class="footer-button enter-different-address-button">
+              <bp-done-text><!---->
+<!----><span i18n="">Return to {{.merchant}}</span>
+</bp-done-text>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+    <div class="footer">
+      <a class="footer__item how-to-pay no-border" href="https://paybitcoin" style="padding-right: 0;" target="_blank">
+        <img class="how-to-pay__help-icon" src="../assets/invoice/help.svg">
+        <span i18n="">How do I pay this?</span>
+      </a>
+      <div class="footer__item no-hover" style="opacity: 1; padding-left: 0; max-height: 21px;">
+        <language-selector>
+    <div class="selector">
+      <img class="footer__item__caret" src="../assets/invoice/caret.svg">
+      English
+    </div>
+    <div class="menu">
+      <div class="menu__scroll">
+        <!----><div class="menu__item selected">
+          English
+        </div><div class="menu__item">
+          ???????
+        </div><div class="menu__item">
+          ���������
+        </div><div class="menu__item">
+          Cestina
+        </div><div class="menu__item">
+          Dansk
+        </div><div class="menu__item">
+          Deutsch
+        </div><div class="menu__item">
+          ????????
+        </div><div class="menu__item">
+          Espanol
+        </div><div class="menu__item">
+          Suomi
+        </div><div class="menu__item">
+          Francais
+        </div><div class="menu__item">
+          ?????
+        </div><div class="menu__item">
+          Magyar
+        </div><div class="menu__item">
+          Bahasa indonesia
+        </div><div class="menu__item">
+          Italiano
+        </div><div class="menu__item">
+          ???
+        </div><div class="menu__item">
+          ???
+        </div><div class="menu__item">
+          Bahasa melayu
+        </div><div class="menu__item">
+          Nederlands
+        </div><div class="menu__item">
+          Norsk
+        </div><div class="menu__item">
+          Polski
+        </div><div class="menu__item">
+          Portugues
+        </div><div class="menu__item">
+          Romana
+        </div><div class="menu__item">
+          �������
+        </div><div class="menu__item">
+          Slovencina
+        </div><div class="menu__item">
+          Svenska
+        </div><div class="menu__item">
+          ???????
+        </div><div class="menu__item">
+          Turkce
+        </div><div class="menu__item">
+          ���������
+        </div><div class="menu__item">
+          Tie?ng Vie?t
+        </div><div class="menu__item">
+          ??
+        </div><div class="menu__item">
+          ????
+        </div>
+      </div>
+    </div>
+  </language-selector>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</invoice>
+
+    
+  
+
+</body></html>
