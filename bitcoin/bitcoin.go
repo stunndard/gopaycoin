@@ -4,19 +4,19 @@ import (
 	"errors"
 	"log"
 
-	"github.com/stunndard/gopaycoin/config"
 	"github.com/btcsuite/btcd/btcjson"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcrpcclient"
 	"github.com/btcsuite/btcutil"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/stunndard/gopaycoin/config"
 )
 
 var (
 	btcrpc *btcrpcclient.Client
 )
 
-func SendRawTx (tx *wire.MsgTx, allowHighFees bool) (*chainhash.Hash, error){
+func SendRawTx(tx *wire.MsgTx, allowHighFees bool) (*chainhash.Hash, error) {
 	return btcrpc.SendRawTransaction(tx, allowHighFees)
 }
 
@@ -29,7 +29,7 @@ func SetTxFee(amount btcutil.Amount) error {
 	return btcrpc.SetTxFee(amount)
 }
 
-func EstimateFee(numBlocks int64)(btcutil.Amount, error) {
+func EstimateFee(numBlocks int64) (btcutil.Amount, error) {
 	return btcrpc.EstimateFee(numBlocks)
 }
 
@@ -70,7 +70,7 @@ func GetReceived(address btcutil.Address, minconf int) (btcutil.Amount, btcutil.
 	}
 	conf, err := btcrpc.GetReceivedByAddressMinConf(address, minconf)
 	if err != nil {
-		return 0,0, err
+		return 0, 0, err
 	}
 	return unconf, conf, err
 }
@@ -185,7 +185,7 @@ func InitBTCRPC() {
 		Host:         config.Cfg.BTCHost,
 		User:         config.Cfg.BTCUser,
 		Pass:         config.Cfg.BTCPass,
-		HTTPPostMode: true,  // Bitcoin core only supports HTTP POST mode
+		HTTPPostMode: true,                      // Bitcoin core only supports HTTP POST mode
 		DisableTLS:   !config.Cfg.BTCHostUseTLS, // Bitcoin core can use TLS if it's behind a TLS proxy like nginx
 	}
 	// Notice the notification parameter is nil since notifications are

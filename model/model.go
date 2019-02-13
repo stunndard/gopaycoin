@@ -21,10 +21,10 @@ func InitDB() {
 	// Migrate the schema
 	log.Println("Migrating the database...")
 	if db.AutoMigrate(&Payment{},
-					  &Withdraw{},
-		              &Rates{},
-		              &Refund{},
-		              &Callback{}).Error != nil {
+		&Withdraw{},
+		&Rates{},
+		&Refund{},
+		&Callback{}).Error != nil {
 		log.Fatalln("db: failed to migrate database")
 	}
 }

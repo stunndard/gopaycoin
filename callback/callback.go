@@ -15,21 +15,21 @@ var (
 )
 
 func worker(p model.Payment) {
-    log.Println("CLB: Worker started, ID:", p.ID)
+	log.Println("CLB: Worker started, ID:", p.ID)
 
-    event := ""
-    if p.Pending {
-        event = "pending"
-    } else {
-        event = "completed"
-    }
+	event := ""
+	if p.Pending {
+		event = "pending"
+	} else {
+		event = "completed"
+	}
 
-    defer removeCallbackWorker(p.ID)
+	defer removeCallbackWorker(p.ID)
 	defer log.Println("CLB: Worker ended, ID:", p.ID)
 	c, err := model.CreateCallback(&model.Callback{
 		Payment: p.ID,
 		Url:     p.Callback,
-        Event:   event,
+		Event:   event,
 	}, p.ID)
 	if err != nil {
 		log.Println("CLB: DB Error creating callback", err)
@@ -53,7 +53,7 @@ func worker(p model.Payment) {
 		case 5:
 			pause = time.Duration(time.Hour) * time.Duration(12)
 		}
-        log.Println("CLB: Sleeping for", pause.String(), "before next attempt")
+		log.Println("CLB: Sleeping for", pause.String(), "before next attempt")
 		time.Sleep(pause)
 
 		c.Attempts = uint(i)
@@ -96,21 +96,21 @@ func worker(p model.Payment) {
 		}
 		return
 	}
-    c.Failed = true
-    if err := c.Save(); err != nil {
-        log.Println("CLB: DB ERROR updating Callback", err)
-    }
+	c.Failed = true
+	if err := c.Save(); err != nil {
+		log.Println("CLB: DB ERROR updating Callback", err)
+	}
 }
 
 func AddCallbackWorker(p model.Payment) {
-    m.Lock()
-    defer m.Unlock()
+	m.Lock()
+	defer m.Unlock()
 	// if worker is already active
-    for i := range activeCallbacks {
-        if activeCallbacks[i] == p.ID {
-            return
-        }
-    }
+	for i := range activeCallbacks {
+		if activeCallbacks[i] == p.ID {
+			return
+		}
+	}
 
 	if len(activeCallbacks) > 100 {
 		log.Println("CLB: Cannot add calback worker, already", len(activeCallbacks), "active workers")

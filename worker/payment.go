@@ -5,16 +5,15 @@ import (
 	"time"
 
 	"github.com/btcsuite/btcutil"
-	"github.com/stunndard/gopaycoin/model"
-	"github.com/stunndard/gopaycoin/config"
 	"github.com/stunndard/gopaycoin/bitcoin"
-	"github.com/stunndard/gopaycoin/rates"
 	"github.com/stunndard/gopaycoin/callback"
+	"github.com/stunndard/gopaycoin/config"
+	"github.com/stunndard/gopaycoin/model"
+	"github.com/stunndard/gopaycoin/rates"
 )
 
 // payment processing PaymentWorker
 func PaymentWorker() {
-
 
 	time.Sleep(time.Duration(time.Second) * 1)
 	log.Println("WRK: Started")
@@ -45,7 +44,6 @@ func PaymentWorker() {
 				log.Println("PAY: ERROR decoding address", payments[i].Address)
 				continue
 			}
-
 
 			// get the unconfirmed and confirmed received amounts
 			unconfBalance, confBalance, err := bitcoin.GetReceived(btcAddress, config.Cfg.MinConfirmations)
@@ -136,7 +134,7 @@ func PaymentWorker() {
 				log.Println("PAY: Error db getting payments from callback", err)
 				continue
 			}
-				callback.AddCallbackWorker(payment)
+			callback.AddCallbackWorker(payment)
 			//}
 		}
 
