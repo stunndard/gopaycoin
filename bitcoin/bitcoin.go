@@ -48,7 +48,7 @@ func SetSmartFee() (btcutil.Amount, error) {
 		return 0, err
 	}
 	if fee.FeeRate < 0 {
-		return 0, errors.New("Estimate fee returned negative value")
+		return 0, errors.New("estimate fee returned negative value")
 	}
 
 	feeamount, err := btcutil.NewAmount(fee.FeeRate)
@@ -130,7 +130,10 @@ func CreateSignTransaction(fromaddress, toaddress btcutil.Address, sendamount, f
 	spendamount, _ := btcutil.NewAmount(0.0)
 	for i := range unspents {
 		if spendamount < sendamount+feeamount {
-			ti := btcjson.TransactionInput{unspents[i].TxID, unspents[i].Vout}
+			ti := btcjson.TransactionInput{
+				Txid: unspents[i].TxID,
+				Vout: unspents[i].Vout,
+			}
 			tis = append(tis, ti)
 			amount, _ := btcutil.NewAmount(unspents[i].Amount)
 			spendamount = spendamount + amount
@@ -140,7 +143,7 @@ func CreateSignTransaction(fromaddress, toaddress btcutil.Address, sendamount, f
 	// calculate the change
 	changeamount := spendamount - sendamount - feeamount
 	if changeamount < 0 && feeamount > 0 {
-		return nil, changeamount, errors.New("Not enough balance to send with the fee specified.")
+		return nil, changeamount, errors.New("not enough balance to send with the fee specified")
 	}
 
 	/*
