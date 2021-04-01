@@ -4,19 +4,19 @@ import (
 	"errors"
 	"log"
 
-	"github.com/stunndard/gopaycoin/config"
 	"github.com/btcsuite/btcd/btcjson"
+	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcrpcclient"
 	"github.com/btcsuite/btcutil"
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/stunndard/gopaycoin/config"
 )
 
 var (
 	btcrpc *btcrpcclient.Client
 )
 
-func SendRawTx (tx *wire.MsgTx, allowHighFees bool) (*chainhash.Hash, error){
+func SendRawTx(tx *wire.MsgTx, allowHighFees bool) (*chainhash.Hash, error) {
 	return btcrpc.SendRawTransaction(tx, allowHighFees)
 }
 
@@ -29,7 +29,7 @@ func SetTxFee(amount btcutil.Amount) error {
 	return btcrpc.SetTxFee(amount)
 }
 
-func EstimateFee(numBlocks int64)(btcutil.Amount, error) {
+func EstimateFee(numBlocks int64) (btcutil.Amount, error) {
 	return btcrpc.EstimateFee(numBlocks)
 }
 
@@ -48,7 +48,7 @@ func SetSmartFee() (btcutil.Amount, error) {
 		return 0, err
 	}
 	if fee.FeeRate < 0 {
-		return 0, errors.New("Estimate fee returned negative value")
+		return 0, errors.New("estimate fee returned negative value")
 	}
 
 	feeamount, err := btcutil.NewAmount(fee.FeeRate)
@@ -70,7 +70,7 @@ func GetReceived(address btcutil.Address, minconf int) (btcutil.Amount, btcutil.
 	}
 	conf, err := btcrpc.GetReceivedByAddressMinConf(address, minconf)
 	if err != nil {
-		return 0,0, err
+		return 0, 0, err
 	}
 	return unconf, conf, err
 }
@@ -130,7 +130,10 @@ func CreateSignTransaction(fromaddress, toaddress btcutil.Address, sendamount, f
 	spendamount, _ := btcutil.NewAmount(0.0)
 	for i := range unspents {
 		if spendamount < sendamount+feeamount {
-			ti := btcjson.TransactionInput{unspents[i].TxID, unspents[i].Vout}
+			ti := btcjson.TransactionInput{
+				Txid: unspents[i].TxID,
+				Vout: unspents[i].Vout,
+			}
 			tis = append(tis, ti)
 			amount, _ := btcutil.NewAmount(unspents[i].Amount)
 			spendamount = spendamount + amount
@@ -140,7 +143,7 @@ func CreateSignTransaction(fromaddress, toaddress btcutil.Address, sendamount, f
 	// calculate the change
 	changeamount := spendamount - sendamount - feeamount
 	if changeamount < 0 && feeamount > 0 {
-		return nil, changeamount, errors.New("Not enough balance to send with the fee specified.")
+		return nil, changeamount, errors.New("not enough balance to send with the fee specified")
 	}
 
 	/*
@@ -185,7 +188,7 @@ func InitBTCRPC() {
 		Host:         config.Cfg.BTCHost,
 		User:         config.Cfg.BTCUser,
 		Pass:         config.Cfg.BTCPass,
-		HTTPPostMode: true,  // Bitcoin core only supports HTTP POST mode
+		HTTPPostMode: true,                      // Bitcoin core only supports HTTP POST mode
 		DisableTLS:   !config.Cfg.BTCHostUseTLS, // Bitcoin core can use TLS if it's behind a TLS proxy like nginx
 	}
 	// Notice the notification parameter is nil since notifications are

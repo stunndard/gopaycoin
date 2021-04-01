@@ -13,22 +13,22 @@ import (
 
 type Payment struct {
 	gorm.Model
-	Item              string
-	Merchant          string
-	Reference         string
-	Address           string
-	Amount            float64
-	Currency          string
-	AmountBTC         float64
-	FeeBTC            float64
-	Pending           bool
-	Paid              bool
-	Refunded          bool
-	RefundAddress     string
-	Expired           bool
-	Callback          string
-	Custom            string
-	ReturnUrl         string
+	Item          string
+	Merchant      string
+	Reference     string
+	Address       string
+	Amount        float64
+	Currency      string
+	AmountBTC     float64
+	FeeBTC        float64
+	Pending       bool
+	Paid          bool
+	Refunded      bool
+	RefundAddress string
+	Expired       bool
+	Callback      string
+	Custom        string
+	ReturnUrl     string
 }
 
 // primes for optimus encryption
@@ -61,10 +61,10 @@ func CreatePayment(payment *Payment) error {
 }
 
 func GetPaymentByReference(id int) (Payment, error) {
-    var payment Payment
-    err := db.First(&payment, "reference = ?", id).Error
-        //ctx.JSON(iris.StatusOK, &iris.Map{"status": "No such payment"})
-    return payment, err
+	var payment Payment
+	err := db.First(&payment, "reference = ?", id).Error
+	//ctx.JSON(iris.StatusOK, &iris.Map{"status": "No such payment"})
+	return payment, err
 }
 
 func GetPaymentByID(id uint) (Payment, error) {
@@ -74,21 +74,20 @@ func GetPaymentByID(id uint) (Payment, error) {
 	return payment, err
 }
 
-
 func GetActivePayments() ([]Payment, error) {
 	var payments []Payment
 
 	// get all new and pending payments
-	if err := db.Where("(created_at > ? AND paid + expired + refunded + pending = ?) OR " +
-		                     "(created_at > ? AND pending = ? AND paid + expired + refunded = ?)",
+	if err := db.Where("(created_at > ? AND paid + expired + refunded + pending = ?) OR "+
+		"(created_at > ? AND pending = ? AND paid + expired + refunded = ?)",
 		time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes)),
 		false,
-		time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitConfirmedMinutes + config.Cfg.WaitConfirmedMinutes)),
+		time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitConfirmedMinutes+config.Cfg.WaitConfirmedMinutes)),
 		true,
 		false).Find(&payments).Error; err != nil {
 
-			log.Println("db: ERROR querying db", err)
-			return nil, err
+		log.Println("db: ERROR querying db", err)
+		return nil, err
 	}
 	return payments, nil
 }
@@ -97,11 +96,11 @@ func GetActiveCallbacks() ([]Payment, error) {
 	var payments []Payment
 
 	/*
-	if err := db.Where("(pending = ? AND callback_pending = ?) OR (paid = ? AND callback_completed = ?)",
-		true, false, true, false).Find(&payments).Error; err != nil {
-		log.Println("db: ERROR querying db", err)
-		return nil, err
-	}
+		if err := db.Where("(pending = ? AND callback_pending = ?) OR (paid = ? AND callback_completed = ?)",
+			true, false, true, false).Find(&payments).Error; err != nil {
+			log.Println("db: ERROR querying db", err)
+			return nil, err
+		}
 	*/
 
 	if err := db.Where("(pending = ? AND callback_pending = ?) OR (paid = ? AND callback_completed = ?)",
@@ -115,12 +114,12 @@ func GetActiveCallbacks() ([]Payment, error) {
 func GetExpiredPayments() ([]Payment, error) {
 	var payments []Payment
 
-	if err := db.Where("(created_at < ? AND paid = ? AND refunded = ? AND expired = ?) OR " +
-		                     "(created_at < ? AND pending = ? AND expired = ? AND refunded = ? AND paid = ?)",
-			time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes + config.Cfg.WaitConfirmedMinutes)),
-			false, false, false,
-			time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes)),
-			false, false, false, false).Find(&payments).Error; err != nil {
+	if err := db.Where("(created_at < ? AND paid = ? AND refunded = ? AND expired = ?) OR "+
+		"(created_at < ? AND pending = ? AND expired = ? AND refunded = ? AND paid = ?)",
+		time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes+config.Cfg.WaitConfirmedMinutes)),
+		false, false, false,
+		time.Now().Add(-time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes)),
+		false, false, false, false).Find(&payments).Error; err != nil {
 		log.Println("db: ERROR querying db", err)
 		return nil, err
 	}
@@ -136,21 +135,21 @@ func (p *Payment) Save() error {
 }
 
 func (p *Payment) IsActive() bool {
-    if p.Paid || p.Pending {
-        return false
-    }
-    return p.CreatedAt.Add(time.Minute*time.Duration(config.Cfg.WaitUnconfirmedMinutes)).After(time.Now())
+	if p.Paid || p.Pending {
+		return false
+	}
+	return p.CreatedAt.Add(time.Minute * time.Duration(config.Cfg.WaitUnconfirmedMinutes)).After(time.Now())
 }
 
 func (p *Payment) IsPending() bool {
-    if !p.Pending {
-        return false
-    }
-    return p.UpdatedAt.Add(time.Minute*time.Duration(config.Cfg.WaitConfirmedMinutes)).After(time.Now())
+	if !p.Pending {
+		return false
+	}
+	return p.UpdatedAt.Add(time.Minute * time.Duration(config.Cfg.WaitConfirmedMinutes)).After(time.Now())
 }
 
 func (p *Payment) IsPaid() bool {
-    return p.Paid && !p.Refunded
+	return p.Paid && !p.Refunded
 }
 
 func (p *Payment) IsOverPaid() bool {
@@ -209,4 +208,3 @@ func (p *Payment) GetStatus() (string, string, string) {
 	}
 	return status, callbackpending, callbackcompleted
 }
-

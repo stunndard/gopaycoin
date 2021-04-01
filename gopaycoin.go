@@ -8,12 +8,12 @@ import (
 	"github.com/stunndard/gopaycoin/bitcoin"
 	"github.com/stunndard/gopaycoin/config"
 	"github.com/stunndard/gopaycoin/model"
+	"github.com/stunndard/gopaycoin/rates"
 	"github.com/stunndard/gopaycoin/routes"
 	"github.com/stunndard/gopaycoin/worker"
 	"gopkg.in/kataras/iris.v6"
 	"gopkg.in/kataras/iris.v6/adaptors/httprouter"
-    "gopkg.in/kataras/iris.v6/adaptors/view"
-	"github.com/stunndard/gopaycoin/rates"
+	"gopkg.in/kataras/iris.v6/adaptors/view"
 	//"github.com/carlescere/scheduler"
 	"github.com/carlescere/scheduler"
 )
@@ -22,7 +22,7 @@ func StartWebApp() {
 	app := iris.New(iris.Configuration{Gzip: true})
 	app.Adapt(iris.DevLogger())
 	app.Adapt(httprouter.New())
-    app.Adapt(view.HTML("./templates", ".html").Reload(true))
+	app.Adapt(view.HTML("./templates", ".html").Reload(true))
 
 	app.OnError(iris.StatusNotFound, func(ctx *iris.Context) {
 		log.Println("NOT FOUND " + ctx.Path())
@@ -46,8 +46,8 @@ func StartWebApp() {
 	app.Post("/balance", routes.ExtPostBalance)
 	app.Get("/invoice/:id", routes.ExtGetInvoice)
 
-    // static invoice assets
-    //app.StaticWeb("/assets", "./assets")
+	// static invoice assets
+	//app.StaticWeb("/assets", "./assets")
 	h := app.StaticHandler("/assets", "./assets", false, false)
 	app.Get("/assets/*path", h)
 

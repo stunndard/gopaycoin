@@ -6,29 +6,25 @@ import (
 	"strconv"
 	"time"
 
-	"gopkg.in/kataras/iris.v6"
-    "github.com/stunndard/gopaycoin/model"
-    "github.com/stunndard/gopaycoin/config"
-    "github.com/stunndard/gopaycoin/bitcoin"
-	"github.com/stunndard/gopaycoin/rates"
 	"github.com/btcsuite/btcutil"
+	"github.com/stunndard/gopaycoin/bitcoin"
+	"github.com/stunndard/gopaycoin/config"
+	"github.com/stunndard/gopaycoin/model"
+	"github.com/stunndard/gopaycoin/rates"
+	"gopkg.in/kataras/iris.v6"
 )
-
-
-
-
 
 // new payment
 func ExtCreatePayment(ctx *iris.Context) {
 	// check if callback url is correct
-    _, err := url.ParseRequestURI(ctx.PostValue("callback"))
+	_, err := url.ParseRequestURI(ctx.PostValue("callback"))
 	if err != nil {
 		ctx.JSON(iris.StatusOK, &iris.Map{"status": "invalid callback url"})
 		return
 	}
 
 	// check the amount
-    amount, err := strconv.ParseFloat(ctx.PostValue("amount"), 64)
+	amount, err := strconv.ParseFloat(ctx.PostValue("amount"), 64)
 	if err != nil {
 		ctx.JSON(iris.StatusOK, &iris.Map{"status": "amount error"})
 		return
@@ -82,38 +78,38 @@ func ExtCreatePayment(ctx *iris.Context) {
 	// round btc amount to 6 digits
 	btc := rates.RoundBTC(btcfloat)
 
-    // create payment
+	// create payment
 	payment := &model.Payment{
-		Item:      item,
-		Merchant:  ctx.PostValue("merchant"),
-        Address:   address.String(),
+		Item:          item,
+		Merchant:      ctx.PostValue("merchant"),
+		Address:       address.String(),
 		RefundAddress: refundAddress,
-		Amount:    amount,
-		Currency:  ctx.PostValue("currency"),
-        AmountBTC: btc,
-		FeeBTC:    fee,
-        Callback:  ctx.PostValue("callback"),
-        Custom:    ctx.PostValue("custom"),
-		ReturnUrl: ctx.PostValue("returnurl"),
-    }
+		Amount:        amount,
+		Currency:      ctx.PostValue("currency"),
+		AmountBTC:     btc,
+		FeeBTC:        fee,
+		Callback:      ctx.PostValue("callback"),
+		Custom:        ctx.PostValue("custom"),
+		ReturnUrl:     ctx.PostValue("returnurl"),
+	}
 
 	if err := model.CreatePayment(payment); err != nil {
-        ctx.JSON(iris.StatusOK, &iris.Map{"status": "db error"})
-    }
+		ctx.JSON(iris.StatusOK, &iris.Map{"status": "db error"})
+	}
 
 	log.Println("REQ: new payment create successful", "Ref:", payment.Reference, "AmountBTC:", payment.AmountBTC,
 		"Address:", payment.Address, "Callback:", payment.Callback)
 	ctx.JSON(iris.StatusOK, &iris.Map{"status": "OK",
-		"item": payment.Item,
-		"amount": payment.Amount,
-		"currency": payment.Currency,
-		"amountbtc": payment.AmountBTC,
-		"address": payment.Address,
+		"item":          payment.Item,
+		"amount":        payment.Amount,
+		"currency":      payment.Currency,
+		"amountbtc":     payment.AmountBTC,
+		"address":       payment.Address,
 		"refundaddress": payment.RefundAddress,
-		"reference": payment.Reference,
-		"paybefore": time.Now().Add(time.Minute * time.Duration(config.Cfg.WaitUnconfirmedMinutes)),
-		"statusurl": "http://" + ctx.ServerHost() + "/status/" + payment.Reference,
-		"invoice": "http://" + ctx.ServerHost() + "/invoice/" + payment.Reference,
+		"reference":     payment.Reference,
+		"paybefore":     time.Now().Add(time.Minute * time.Duration(config.Cfg.WaitUnconfirmedMinutes)),
+		"statusurl":     "http://" + ctx.ServerHost() + "/status/" + payment.Reference,
+		"invoice":       "http://" + ctx.ServerHost() + "/invoice/" + payment.Reference,
 	})
 }
 
@@ -126,7 +122,7 @@ func ExtGetPaymentStatus(ctx *iris.Context) {
 	}
 
 	payment, err := model.GetPaymentByReference(id)
-    if err != nil {
+	if err != nil {
 		ctx.JSON(iris.StatusOK, &iris.Map{"status": "No such payment"})
 		return
 	}

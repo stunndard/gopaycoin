@@ -4,10 +4,10 @@ import (
 	"log"
 	"strconv"
 
+	"github.com/btcsuite/btcutil"
+	"github.com/stunndard/gopaycoin/bitcoin"
 	"github.com/stunndard/gopaycoin/config"
 	"github.com/stunndard/gopaycoin/model"
-	"github.com/stunndard/gopaycoin/bitcoin"
-	"github.com/btcsuite/btcutil"
 	"gopkg.in/kataras/iris.v6"
 )
 
@@ -127,14 +127,12 @@ func ExtPostPayout(ctx *iris.Context) {
 		return
 	}
 
-
 	payout := &model.Withdraw{
 		Address: address.String(),
-		Amount: payoutamount.ToBTC(),
-		Fee: feeamount.ToBTC(),
-		Tx: tx.String(),
+		Amount:  payoutamount.ToBTC(),
+		Fee:     feeamount.ToBTC(),
+		Tx:      tx.String(),
 	}
-
 
 	if err := model.CreateWithdraw(payout); err != nil {
 		log.Println("db: ERROR updating db", err)

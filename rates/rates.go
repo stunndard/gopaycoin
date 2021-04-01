@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/btcsuite/btcutil"
 	"github.com/parnurzeal/gorequest"
 	"github.com/stunndard/gopaycoin/config"
 	"github.com/stunndard/gopaycoin/model"
-	"github.com/btcsuite/btcutil"
 )
 
 type exchangeRates struct {
